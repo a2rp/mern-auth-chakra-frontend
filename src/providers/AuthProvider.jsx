@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
                 const res = await authApi.me(); // { ok, user }
                 if (!cancelled) setUser(res.user);
             } catch (err) {
-                // 401 just means "not logged in" — not an app error
+                // 401 just means "not logged in" - not an app error
                 if (!cancelled && err?.status !== 401) setError(err.message || "Failed to load session");
             } finally {
                 if (!cancelled) setReady(true);

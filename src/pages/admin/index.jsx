@@ -298,11 +298,11 @@ const Admin = () => {
         <Styled.Wrapper>
             <Box>
                 <HStack justify="space-between" align="center" mb={2}>
-                    <Heading size="lg">Admin — Users</Heading>
+                    <Heading size="lg">Admin - Users</Heading>
                     <Button colorScheme="blue" onClick={openCreate}>Add user</Button>
                 </HStack>
                 <Text color="gray.600" mb={4}>
-                    Signed in as <b>{user?.name}</b> ({user?.email}) — role: <b>{user?.role}</b>
+                    Signed in as <b>{user?.name}</b> ({user?.email}) - role: <b>{user?.role}</b>
                 </Text>
 
                 {loadError && (

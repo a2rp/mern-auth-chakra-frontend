@@ -76,9 +76,7 @@ const Register = () => {
         try {
             await doRegister({ name, email, password }); // httpOnly cookie set by server
             navigate("/dashboard");
-        } catch {
-            /* global error is shown above */
-        }
+        } catch { return; }
     }
 
     return (

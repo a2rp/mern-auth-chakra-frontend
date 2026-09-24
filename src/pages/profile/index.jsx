@@ -94,7 +94,7 @@ const Profile = () => {
                 if (!active) return;
                 setUser(res.user);
                 reset({ name: res.user.name || "", email: res.user.email || "" }, { keepDirty: false });
-            } catch { }
+            } catch { return; }
         })();
         return () => {
             active = false;

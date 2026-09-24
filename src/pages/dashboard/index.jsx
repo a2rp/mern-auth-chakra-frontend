@@ -32,7 +32,7 @@ const Dashboard = () => {
             await logout();
             setConfirmOpen(false);
             navigate("/login");
-        } catch { }
+        } catch { return; }
     }
 
     return (
