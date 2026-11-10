@@ -27,8 +27,9 @@ import { Styled } from "./styled";
 
 // simple schema
 const schema = z.object({
-    email: z.string().email("Enter a valid email"),
-    password: z.string().min(8, "Min 8 characters"),
+    email: z.string().trim().email("Enter a valid email"),
+    password: z.string().min(8, "Min 8 characters").max(72, "Max 72 characters")
+        .refine((value) => new TextEncoder().encode(value).length <= 72, "Password cannot exceed 72 bytes"),
 });
 
 const Login = () => {
@@ -89,6 +90,7 @@ const Login = () => {
                                 <Input
                                     type="email"
                                     placeholder="you@example.com"
+                                    maxLength={254}
                                     // clear the global error as soon as user edits
                                     {...register("email", { onChange: () => error && setError(null) })}
                                 />
@@ -105,6 +107,7 @@ const Login = () => {
                                 <Input
                                     type={showPwd ? "text" : "password"}
                                     placeholder="••••••••"
+                                    maxLength={72}
                                     {...register("password", { onChange: () => error && setError(null) })}
                                 />
                                 <InputRightElement pointerEvents="auto">

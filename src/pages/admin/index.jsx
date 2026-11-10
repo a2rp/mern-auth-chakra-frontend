@@ -46,19 +46,21 @@ const fmt = new Intl.DateTimeFormat(undefined, {
 });
 
 // strong password: ≥8 chars, 1 upper, 1 lower, 1 number, 1 special
-const STRONG_PWD_RX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+const STRONG_PWD_RX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,72}$/;
 
 // create-user schema (with strength check)
 const createSchema = z.object({
-    name: z.string().min(2, "Min 2 characters").max(60),
-    email: z.string().email("Enter a valid email"),
+    name: z.string().trim().min(2, "Min 2 characters").max(60),
+    email: z.string().trim().email("Enter a valid email").max(254),
     password: z
         .string()
         .min(8, "Min 8 characters")
+        .max(72, "Max 72 characters")
         .regex(
             STRONG_PWD_RX,
             "Use upper & lower case letters, a number, and a special character"
-        ),
+        )
+        .refine((value) => new TextEncoder().encode(value).length <= 72, "Password cannot exceed 72 bytes"),
     role: z.enum(["user", "admin"]),
 });
 
@@ -482,7 +484,8 @@ const Admin = () => {
                                     <InputGroup>
                                         <Input
                                             type={showPwd ? "text" : "password"}
-                                            placeholder="strong password (min 8)"
+                                            placeholder="strong password (8–72 characters)"
+                                            maxLength={72}
                                             {...regCreate("password")}
                                         />
                                         <InputRightElement>
@@ -497,7 +500,7 @@ const Admin = () => {
                                     </InputGroup>
                                     {!createErrors.password && (
                                         <FormHelperText>
-                                            Use upper & lower case letters, a number, and a special character.
+                                            Use upper and lower case letters, a number, and a symbol (max 72 bytes).
                                         </FormHelperText>
                                     )}
                                     <FormErrorMessage>{createErrors.password?.message}</FormErrorMessage>

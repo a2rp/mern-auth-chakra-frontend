@@ -1,5 +1,6 @@
 {
     "name": "mern-auth-chakra-frontend",
+    "description": "React and Vite frontend for a MERN authentication app with HttpOnly sessions and role-based admin tools.",
     "private": true,
     "version": "0.0.0",
     "type": "module",
@@ -8,7 +9,7 @@
         "build": "vite build",
         "lint": "eslint .",
         "preview": "vite preview",
-        "predeploy": "npm run build && copy dist\\index.html dist\\404.html",
+        "predeploy": "npm run build && node scripts/copy-404.js",
         "deploy": "npx gh-pages -d dist -b gh-pages"
     },
     "dependencies": {
@@ -16,10 +17,7 @@
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.1",
         "@hookform/resolvers": "^5.2.2",
-        "@mui/material": "^7.3.2",
         "framer-motion": "^12.23.13",
-        "jsqr": "^1.4.0",
-        "qrcode": "^1.5.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-hook-form": "^7.62.0",

@@ -39,25 +39,29 @@ const fmt = new Intl.DateTimeFormat(undefined, {
 
 // profile schema
 const profileSchema = z.object({
-    name: z.string().min(2, "Min 2 characters").max(60),
-    email: z.string().email("Enter a valid email"),
+    name: z.string().trim().min(2, "Min 2 characters").max(60),
+    email: z.string().trim().email("Enter a valid email").max(254),
 });
 
 // strong password: ≥8 chars, 1 upper, 1 lower, 1 number, 1 special
-const STRONG_PWD_RX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+const STRONG_PWD_RX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,72}$/;
 
 // change-password schema (mirrors backend)
 const pwdSchema = z
     .object({
-        currentPassword: z.string().min(8, "Min 8 characters"),
+        currentPassword: z.string().min(8, "Min 8 characters").max(72, "Max 72 characters")
+            .refine((value) => new TextEncoder().encode(value).length <= 72, "Password cannot exceed 72 bytes"),
         newPassword: z
             .string()
             .min(8, "Min 8 characters")
+            .max(72, "Max 72 characters")
             .regex(
                 STRONG_PWD_RX,
                 "Use upper & lower case letters, a number, and a special character"
-            ),
-        confirmNew: z.string().min(8, "Min 8 characters"),
+            )
+            .refine((value) => new TextEncoder().encode(value).length <= 72, "Password cannot exceed 72 bytes"),
+        confirmNew: z.string().min(8, "Min 8 characters").max(72, "Max 72 characters")
+            .refine((value) => new TextEncoder().encode(value).length <= 72, "Password cannot exceed 72 bytes"),
     })
     .refine((v) => v.newPassword === v.confirmNew, {
         path: ["confirmNew"],
@@ -255,6 +259,7 @@ const Profile = () => {
                                 <Input
                                     type={showCur ? "text" : "password"}
                                     placeholder="••••••••"
+                                    maxLength={72}
                                     {...regPwd("currentPassword", {
                                         onChange: () => {
                                             setPwdError(null);
@@ -283,7 +288,8 @@ const Profile = () => {
                                 </InputLeftElement>
                                 <Input
                                     type={showNew ? "text" : "password"}
-                                    placeholder="at least 8 chars, strong"
+                                    placeholder="strong password (8–72 characters)"
+                                    maxLength={72}
                                     {...regPwd("newPassword", {
                                         onChange: () => {
                                             setPwdError(null);
@@ -303,7 +309,7 @@ const Profile = () => {
                             </InputGroup>
                             {!pwdErrors.newPassword && (
                                 <FormHelperText>
-                                    Use upper & lower case letters, a number, and a special character (min 8).
+                                    Use upper and lower case letters, a number, and a symbol (max 72 bytes).
                                 </FormHelperText>
                             )}
                             <FormErrorMessage>{pwdErrors.newPassword?.message}</FormErrorMessage>
@@ -318,6 +324,7 @@ const Profile = () => {
                                 <Input
                                     type={showConf ? "text" : "password"}
                                     placeholder="re-enter new password"
+                                    maxLength={72}
                                     {...regPwd("confirmNew", {
                                         onChange: () => {
                                             setPwdError(null);

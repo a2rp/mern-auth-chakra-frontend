@@ -3,7 +3,7 @@
 // - Always sends cookies (credentials: 'include')
 // - Normalizes errors so UI code stays clean
 
-const BASE = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
+const BASE = (import.meta.env.VITE_API_URL || "http://localhost:1198").replace(/\/+$/, "");
 
 async function request(path, { method = "GET", body, headers = {} } = {}) {
     const isForm = body instanceof FormData;
